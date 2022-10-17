@@ -1,0 +1,41 @@
+services:
+  userdb:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: userdb
+    volumes:
+      - postgresdb:/var/lib/postgresql/data
+
+  user-service:
+    build:
+      context: ./user
+    image: user:1
+    env_file:
+      - ./env/user.env
+    depends_on:
+      - userdb
+
+  recommendation-service:
+    build:
+      context: ./documents
+    image: recommendation:1
+    env_file:
+      - ./env/rec.env
+
+  main-service:
+    build:
+      context: ./mainservice
+    image: main:1
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./env/main.env
+
+volumes:
+  postgresdb:
+
+

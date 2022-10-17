@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: main-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: main
+  template:
+    metadata:
+      labels:
+        app: main
+    spec:
+      containers:
+        - name: main
+          image: main:1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: RECOMMENDATION_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: main-env
+                  key: RECOMMENDATION_URL
+            - name: USER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: main-env
+                  key: USER_URL
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /main/recommendations
+            initialDelaySeconds: 10
+            periodSeconds: 2
+            successThreshold: 5
+            failureThreshold: 3
+
+
+
+

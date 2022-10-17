@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recommendation-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: recommendation
+  template:
+    metadata:
+      labels:
+        app: recommendation
+    spec:
+      containers:
+        - name: recommendation
+          image: recommendation:1
+          env:
+            - name: MONGODB_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: recommendation-env
+                  key: MONGODB_USERNAME
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: recommendation-env
+                  key: MONGODB_PASSWORD
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /recommendations
+            initialDelaySeconds: 10
+            periodSeconds: 2
+            successThreshold: 5
+            failureThreshold: 3

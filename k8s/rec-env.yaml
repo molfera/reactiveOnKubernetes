@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: recommendation-env
+data:
+  MONGODB_USERNAME: test
+  MONGODB_PASSWORD: test

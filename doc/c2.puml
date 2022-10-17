@@ -1,0 +1,25 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+
+
+package "Kubernetes" {
+    node "Node" {
+        [main-service] --> [user-service]
+        [main-service] --> [recommendation-service]
+        [user-service] --> userdb
+        [recommendation-service] ---> mongodb
+
+        database "userdb" {
+          folder Users
+        }
+    }
+}
+
+[Client] --> [main-service]
+
+database "mongodb" {
+    folder Recommendations
+}
+
+@enduml
